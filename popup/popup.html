@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Curator</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Web Curator</h1>
+      <button @click="createNewDoc">New Document</button>
+    </header>
+    
+    <div class="documents-list">
+      <div v-for="doc in documents" :key="doc.id" class="document-item">
+        <h3>{{ doc.name }}</h3>
+        <div class="document-actions">
+          <button @click="openDoc(doc.id)">Open</button>
+          <button @click="exportDoc(doc)">Export</button>
+          <button @click="deleteDoc(doc.id)">Delete</button>
+        </div>
+      </div>
+    </div>
+    
+    <div v-if="currentDoc" class="document-editor">
+      <h2>{{ currentDoc.name }}</h2>
+      <input v-model="currentDoc.name" type="text">
+      
+      <div class="entries-list">
+        <div v-for="(entry, index) in currentDoc.entries" :key="index" class="entry-item">
+          <blockquote>{{ entry.content }}</blockquote>
+          <div class="entry-source">
+            <a :href="entry.source.url" target="_blank">{{ entry.source.title }}</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="editor-actions">
+        <button @click="exportToGoogleDocs">Export to Google Docs</button>
+        <button @click="exportToPDF">Export to PDF</button>
+        <button @click="generateSummary">AI Summary</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
