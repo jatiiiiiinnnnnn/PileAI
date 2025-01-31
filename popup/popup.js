@@ -1,68 +1,46 @@
 const { createApp } = Vue;
 
 createApp({
-  data() {
-    return {
-      documents: {},
-      currentDoc: null,
-    };
-  },
-  async mounted() {
-    await this.loadDocuments();
-  },
-  methods: {
-    async loadDocuments() {
-      const { documents } = await chrome.storage.local.get('documents');
-      this.documents = documents || {};
+    data() {
+        return {
+            documents: [],
+            currentDoc: null,
+        };
     },
-    
-    async createNewDoc() {
-      const newDoc = {
-        id: Date.now().toString(),
-        name: `Document ${Date.now()}`,
-        entries: [],
-        createdAt: new Date().toISOString(),
-      };
-      
-      await chrome.storage.local.set({
-        documents: { ...this.documents, [newDoc.id]: newDoc },
-        currentDocId: newDoc.id,
-      });
-      
-      this.currentDoc = newDoc;
-      this.documents = { ...this.documents, [newDoc.id]: newDoc };
+    methods: {
+        createNewDoc() {
+            const newDoc = {
+                id: Date.now(),
+                name: 'Untitled Document',
+                entries: [],
+            };
+            this.documents.push(newDoc);
+            this.currentDoc = newDoc;
+        },
+        openDoc(docId) {
+            this.currentDoc = this.documents.find(doc => doc.id === docId);
+        },
+        exportDoc(doc) {
+            // Implement export logic here
+            alert(`Exporting document: ${doc.name}`);
+        },
+        deleteDoc(docId) {
+            this.documents = this.documents.filter(doc => doc.id !== docId);
+            if (this.currentDoc && this.currentDoc.id === docId) {
+                this.currentDoc = null;
+            }
+        },
+        exportToGoogleDocs() {
+            // Implement export to Google Docs logic here
+            alert(`Exporting ${this.currentDoc.name} to Google Docs`);
+        },
+        exportToPDF() {
+            // Implement export to PDF logic here
+            alert(`Exporting ${this.currentDoc.name} to PDF`);
+        },
+        generateSummary() {
+            // Implement AI summary generation logic here
+            alert(`Generating summary for ${this.currentDoc.name}`);
+        },
     },
-    
-    async openDoc(docId) {
-      this.currentDoc = this.documents[docId];
-      await chrome.storage.local.set({ currentDocId: docId });
-    },
-    
-    async exportDoc(doc) {
-      const content = doc.entries
-        .map(entry => `${entry.content}\nSource: ${entry.source.url}\n\n`)
-        .join('\n');
-      
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      
-      chrome.downloads.download({
-        url: url,
-        filename: `${doc.name}.txt`,
-      });
-    },
-    
-    async generateSummary() {
-      const entriesContent = this.currentDoc.entries
-        .map(entry => entry.content)
-        .join('\n\n');
-      
-      const summary = await chrome.runtime.sendMessage({
-        action: 'generateSummary',
-        content: entriesContent,
-      });
-      
-      alert(`AI Summary:\n\n${summary}`);
-    }
-  }
 }).mount('#app');
