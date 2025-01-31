@@ -1,0 +1,10 @@
+{
+    "extensionName": {
+      "message": "My Extension",
+      "description": "The name of the extension"
+    },
+    "extensionDescription": {
+      "message": "A description of my extension",
+      "description": "The description of the extension"
+    }
+  }
