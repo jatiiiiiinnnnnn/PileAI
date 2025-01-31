@@ -24,8 +24,8 @@
       "service_worker": "src/background/background.js"
     },
     "icons": {
-      "48": "assets/icons/icon48.png",
-      "128": "assets/icons/icon128.png"
+      "48": "assets/icons/action-icons/icon48.png",
+      "128": "assets/icons/action-icons/icon128.png"
     }
   }
   
